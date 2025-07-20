@@ -8,16 +8,17 @@ warnings.filterwarnings('ignore')
 st.set_page_config(page_title="Superstore!!!", page_icon=":bar_chart:",layout="wide")
 
 st.title(" :bar_chart: Sample SuperStore EDA")
-st.markdown('<style>div.block-container{padding-top:1rem;}</style>',unsafe_allow_html=True)
+st.markdown('<style>div.block-container{padding-top:3rem;}</style>',unsafe_allow_html=True)
 
 fl = st.file_uploader(":file_folder: Upload a file",type=(["csv","txt","xlsx","xls"]))
 if fl is not None:
     filename = fl.name
     st.write(filename)
-    df = pd.read_csv(filename, encoding = "ISO-8859-1")
+    df = pd.read_excel(filename)
 else:
-    os.chdir(r"C:\Users\AEPAC\Desktop\Streamlit")
-    df = pd.read_csv("Superstore.csv", encoding = "ISO-8859-1")
+
+    os.chdir(r"C:\Users\liavb\OneDrive\Documents\GitHub\PythonStreamlitDashboard")
+    df = pd.read_csv("Superstore_orders_example.csv")
 
 col1, col2 = st.columns((2))
 df["Order Date"] = pd.to_datetime(df["Order Date"])
@@ -147,14 +148,27 @@ with st.expander("Summary_Table"):
 
 # Create a scatter plot
 data1 = px.scatter(filtered_df, x = "Sales", y = "Profit", size = "Quantity")
-data1['layout'].update(title="Relationship between Sales and Profits using Scatter Plot.",
-                       titlefont = dict(size=20),xaxis = dict(title="Sales",titlefont=dict(size=19)),
-                       yaxis = dict(title = "Profit", titlefont = dict(size=19)))
+
+data1.update_layout(
+    title=dict(
+        text = "Relationship between Sales and Profits using Scatter Plot.",
+        font = dict(size=20)
+    ),
+    xaxis = dict(
+        title ="Sales"
+    ),
+    yaxis = dict(
+        title = "Profit"
+    ),
+    font = dict(
+        size=19
+    )
+)
 st.plotly_chart(data1,use_container_width=True)
 
 with st.expander("View Data"):
     st.write(filtered_df.iloc[:500,1:20:2].style.background_gradient(cmap="Oranges"))
-
+px.scatter()["layout"].update()
 # Download orginal DataSet
 csv = df.to_csv(index = False).encode('utf-8')
 st.download_button('Download Data', data = csv, file_name = "Data.csv",mime = "text/csv")
